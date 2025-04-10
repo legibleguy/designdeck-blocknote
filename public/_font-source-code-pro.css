@@ -1,0 +1,27 @@
+/* fonts.css */
+@import 'source-code-pro/source-code-pro.css';
+
+:root {
+  --font-mono: 'Source Code Pro', monospace;
+}
+
+/* Optional: Create variables for different font weights */
+.font-light {
+  font-family: var(--font-mono);
+  font-weight: 300;
+}
+
+.font-regular {
+  font-family: var(--font-mono);
+  font-weight: 400;
+}
+
+.font-medium {
+  font-family: var(--font-mono);
+  font-weight: 500;
+}
+
+.font-bold {
+  font-family: var(--font-mono);
+  font-weight: 700;
+}

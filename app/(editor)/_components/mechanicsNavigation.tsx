@@ -5,6 +5,7 @@ import { ChevronsLeft, MenuIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
 import { ComponentRef, useRef, useState, useEffect } from "react";
 import { useMediaQuery } from "usehooks-ts";
+import GameMechanicCardSmall from "./gameMechanicCardSmall";
 
 const MechanicsNav = () => {
   const pathname = usePathname();
@@ -31,7 +32,7 @@ const MechanicsNav = () => {
     if (!isResizingRef.current) return;
     let newWidth = event.clientX;
 
-    if (newWidth < 240) newWidth = 240;
+    if (newWidth < 276) newWidth = 276;
     if (newWidth > 480) newWidth = 480;
 
     if (sidebarRef.current && navbarRef.current) {
@@ -61,9 +62,9 @@ const MechanicsNav = () => {
     } else {
       setIsCollapsed(false);
       if (sidebarRef.current && navbarRef.current) {
-        sidebarRef.current.style.width = "240px";
-        navbarRef.current.style.setProperty("left", "240px");
-        navbarRef.current.style.setProperty("width", "calc(100% - 240px)");
+        sidebarRef.current.style.width = "276px";
+        navbarRef.current.style.setProperty("left", "276px");
+        navbarRef.current.style.setProperty("width", "calc(100% - 276px)");
       }
     }
   };
@@ -98,9 +99,9 @@ const MechanicsNav = () => {
     } else {
       setIsCollapsed(false);
       if (sidebarRef.current && navbarRef.current) {
-        sidebarRef.current.style.width = "240px";
-        navbarRef.current.style.setProperty("left", "240px");
-        navbarRef.current.style.setProperty("width", "calc(100% - 240px)");
+        sidebarRef.current.style.width = "276px";
+        navbarRef.current.style.setProperty("left", "276px");
+        navbarRef.current.style.setProperty("width", "calc(100% - 276px)");
       }
       document.body.style.overflowX = "auto";
     }
@@ -116,6 +117,12 @@ const MechanicsNav = () => {
           isMobile && "w-0"
         )}
       >
+        {/* Example Game Mechanic Card */}
+        <GameMechanicCardSmall
+          title="Adaptive AI"
+          category="AI"
+          description="Dynamic adjustment of AI behaviour & difficulty."
+        />
 
         <div
           role="button"
@@ -140,7 +147,7 @@ const MechanicsNav = () => {
       <div
         ref={navbarRef}
         className={cn(
-          "absolute top-0 z-[99999] left-60 w-[calc(100%-240px)]",
+          "absolute top-0 z-[99999] left-60 w-[calc(100%-276px)]",
           isResetting && "transition-all ease-in-out duration-300",
           isMobile && "left-0 w-full"
         )}
