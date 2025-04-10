@@ -1,7 +1,7 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ChevronsLeft, MenuIcon, List, BookImage } from "lucide-react";
+import { ChevronsLeft, MenuIcon, List, BookImage, Info } from "lucide-react";
 import { ComponentRef, useRef, useState, useEffect } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
@@ -137,6 +137,7 @@ const MechanicsNav: React.FC<MechanicsNavProps> = ({ gameMechanics }) => {
         )}
       >
 
+        {/* a toggle button to switch between the list that fits more mechanics in one view vs card view that focuses on one mechanic in more detail   */}
         <div className="flex justify-center mt-4">
           <ToggleGroup type="single">
           <ToggleGroupItem value="a">
@@ -148,6 +149,7 @@ const MechanicsNav: React.FC<MechanicsNavProps> = ({ gameMechanics }) => {
           </ToggleGroup>
         </div>
 
+        {/* a list of game mechanics, each with a title and description */}
         <div className="flex flex-col gap-4 p-4 overflow-y-auto">
           {gameMechanics.map((mechanic) => (
             <GameMechanicCardSmall
@@ -159,8 +161,9 @@ const MechanicsNav: React.FC<MechanicsNavProps> = ({ gameMechanics }) => {
           ))}
         </div>
 
-        <div>
-          Info Button will go here
+        {/* an info disclaimer about where our dataset came from and how you can contribure to it */}
+        <div className="p-4 mt-8">
+          <Info role="button" className="h-8 w-8" />
         </div>
 
         <div
