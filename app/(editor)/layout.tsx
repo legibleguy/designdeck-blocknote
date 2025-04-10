@@ -1,4 +1,5 @@
 import MechanicsNav from "./_components/mechanicsNavigation";
+import { ProjectTagsProvider } from "./context/projectTagsContext";
 
 import { supabase } from '@/app/utils/supabase';
 
@@ -15,12 +16,14 @@ const RootLayout = async ({children} :  {children: React.ReactNode}) =>  {
     }
 
     return ( 
-        <div className="h-full flex">
-            <MechanicsNav gameMechanics={gameMechanics} />
-            <main className="flex-1 h-full overflow-y-auto">
-                {children}
-            </main>
-        </div>
+        <ProjectTagsProvider>
+            <div className="h-full flex w-full">
+                <MechanicsNav gameMechanics={gameMechanics} />
+                <main className="flex-1 h-full overflow-y-auto">
+                    {children}
+                </main>
+            </div>
+        </ProjectTagsProvider>
      );
 }
  

@@ -2,11 +2,14 @@
 
 import TextareaAutosize from "react-textarea-autosize";
 import dynamic from "next/dynamic";
-import {useMemo} from "react";
+import { useMemo } from "react";
+import ProjectTags from "../_components/projectTags";
 
 const EditorDocument = () => {
-    const Editor = useMemo(
-        () => dynamic(() => import("../_components/editor"), {ssr:false}), []);
+  const Editor = useMemo(
+    () => dynamic(() => import("../_components/editor"), { ssr: false }),
+    []
+  );
   return (
     <main className="min-h-screen">
       <div className="flex flex-col px-24 py-10 w-full">
@@ -16,6 +19,7 @@ const EditorDocument = () => {
         />
         <Editor onChange={function (): void {}} />
       </div>
+      <ProjectTags />
     </main>
   );
 };

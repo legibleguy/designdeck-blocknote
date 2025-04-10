@@ -2,10 +2,11 @@
 
 import { cn } from "@/lib/utils";
 import { ChevronsLeft, MenuIcon, List, BookImage, Info } from "lucide-react";
-import { ComponentRef, useRef, useState, useEffect } from "react";
+import { ComponentRef, useRef, useState, useEffect, useContext } from "react";
 import { useMediaQuery } from "usehooks-ts";
-import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group"
+import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import GameMechanicCardSmall from "./gameMechanicCardSmall";
+import { ProjectTagsContext } from "../context/projectTagsContext";
 
 interface MechanicsNavProps {
   gameMechanics: {
@@ -19,6 +20,8 @@ interface MechanicsNavProps {
 const MIN_SIDEBAR_WIDTH = 309;
 
 const MechanicsNav: React.FC<MechanicsNavProps> = ({ gameMechanics }) => {
+  const { addTag, isTagHidden } = useContext(ProjectTagsContext);
+
   const isMobile = useMediaQuery("(max-width: 768px)");
 
   const isResizingRef = useRef(false);
@@ -136,29 +139,31 @@ const MechanicsNav: React.FC<MechanicsNavProps> = ({ gameMechanics }) => {
           isMobile && "w-0"
         )}
       >
-
         {/* a toggle button to switch between the list that fits more mechanics in one view vs card view that focuses on one mechanic in more detail   */}
-        <div className="flex justify-center mt-4">
+        <div className="flex justify-center mt-16 mb-2">
           <ToggleGroup type="single">
-          <ToggleGroupItem value="a">
-            <List role="button" className="h-4 w-4" />
-          </ToggleGroupItem>
-          <ToggleGroupItem value="b">
-            <BookImage role="button" className="h-4 w-4" />
-          </ToggleGroupItem>
+            <ToggleGroupItem value="list" className="hover:bg-secondary/100 hover:text-gray-500 active:bg-secondary/20 active:border-secondary/100 border-2">
+              <List role="button" className="h-4 w-4" />
+            </ToggleGroupItem>
+            <ToggleGroupItem value="card" className="hover:bg-secondary/100 hover:text-gray-500 active:bg-secondary/20 active:border-secondary/100 border-2">
+              <BookImage role="button" className="h-4 w-4" />
+            </ToggleGroupItem>
           </ToggleGroup>
         </div>
 
         {/* a list of game mechanics, each with a title and description */}
         <div className="flex flex-col gap-4 p-4 overflow-y-auto">
-          {gameMechanics.map((mechanic) => (
-            <GameMechanicCardSmall
-              key={mechanic.id}
-              title={mechanic.title}
-              category={mechanic.category}
-              description={mechanic.description}
-            />
-          ))}
+          {gameMechanics
+            .filter((mechanic) => !isTagHidden(mechanic.id))
+            .map((mechanic) => (
+              <GameMechanicCardSmall
+                key={mechanic.id}
+                title={mechanic.title}
+                category={mechanic.category}
+                description={mechanic.description}
+                onAdd={() => addTag({ id: mechanic.id, title: mechanic.title, description: "" })}
+              />
+            ))}
         </div>
 
         {/* an info disclaimer about where our dataset came from and how you can contribure to it */}
