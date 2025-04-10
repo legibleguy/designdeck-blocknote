@@ -3,7 +3,7 @@
 import { cn } from "@/lib/utils";
 import { ChevronsLeft, MenuIcon } from "lucide-react";
 import { usePathname } from "next/navigation";
-import { ComponentRef, useRef, useState } from "react";
+import { ComponentRef, useRef, useState, useEffect } from "react";
 import { useMediaQuery } from "usehooks-ts";
 
 const MechanicsNav = () => {
@@ -50,6 +50,62 @@ const MechanicsNav = () => {
     document.removeEventListener("mouseup", handleMouseUp);
   };
 
+  const handleMenuIconClick = () => {
+    if (isMobile) {
+      setIsCollapsed(false);
+      if (sidebarRef.current && navbarRef.current) {
+        sidebarRef.current.style.width = "100%";
+        navbarRef.current.style.setProperty("left", "100%", "important");
+        navbarRef.current.style.setProperty("width", "0", "important");
+      }
+    } else {
+      setIsCollapsed(false);
+      if (sidebarRef.current && navbarRef.current) {
+        sidebarRef.current.style.width = "240px";
+        navbarRef.current.style.setProperty("left", "240px");
+        navbarRef.current.style.setProperty("width", "calc(100% - 240px)");
+      }
+    }
+  };
+
+  const handleChevronClick = () => {
+    if (isMobile) {
+      setIsCollapsed(true);
+      if (sidebarRef.current && navbarRef.current) {
+        sidebarRef.current.style.width = "0px";
+        navbarRef.current.style.setProperty("left", "0px");
+        navbarRef.current.style.setProperty("width", "100%");
+      }
+    } else {
+      setIsCollapsed(true);
+      if (sidebarRef.current && navbarRef.current) {
+        sidebarRef.current.style.width = "0px";
+        navbarRef.current.style.setProperty("left", "0px");
+        navbarRef.current.style.setProperty("width", "100%");
+      }
+    }
+  };
+
+  useEffect(() => {
+    if (isMobile) {
+      setIsCollapsed(true);
+      if (sidebarRef.current && navbarRef.current) {
+        sidebarRef.current.style.width = "0px";
+        navbarRef.current.style.setProperty("left", "0px");
+        navbarRef.current.style.setProperty("width", "100%");
+      }
+      document.body.style.overflowX = "hidden";
+    } else {
+      setIsCollapsed(false);
+      if (sidebarRef.current && navbarRef.current) {
+        sidebarRef.current.style.width = "240px";
+        navbarRef.current.style.setProperty("left", "240px");
+        navbarRef.current.style.setProperty("width", "calc(100% - 240px)");
+      }
+      document.body.style.overflowX = "auto";
+    }
+  }, [isMobile]);
+
   return (
     <>
       <aside
@@ -60,15 +116,19 @@ const MechanicsNav = () => {
           isMobile && "w-0"
         )}
       >
-        Mechanics will go here
+
         <div
           role="button"
           className={cn(
-            "h-6 w-6 text-muted-foreground rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 absolute top-3 right-2 opacity-0 group-hover/sidebar:opacity-100",
+            "h-6 w-6 cursor-pointer text-muted-foreground rounded-sm hover:bg-neutral-300 dark:hover:bg-neutral-600 absolute top-3 right-2 opacity-0 group-hover/sidebar:opacity-100",
             isMobile && "opacity-100"
           )}
         >
-          <ChevronsLeft className="h-6 w-6" />
+          <ChevronsLeft
+            role="button"
+            className="h-6 w-6 text-muted-foreground"
+            onClick={handleChevronClick}
+          />
         </div>
         <div
           onMouseDown={handleMouseDown}
@@ -86,11 +146,14 @@ const MechanicsNav = () => {
         )}
       >
         <nav className="bg-transparent px-3 py-2 w-full">
-          {
-            isCollapsed && 
-            <MenuIcon role="button" className="h-6 w-6 text-muted-foreground" />
-          }
-        </nav> 
+          {isCollapsed && (
+            <MenuIcon
+              role="button"
+              className="h-6 w-6 text-muted-foreground cursor-pointer"
+              onClick={handleMenuIconClick}
+            />
+          )}
+        </nav>
       </div>
     </>
   );

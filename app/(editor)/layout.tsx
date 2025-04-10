@@ -1,6 +1,14 @@
 import MechanicsNav from "./_components/mechanicsNavigation";
 
-const RootLayout = ({children} :  {children: React.ReactNode}) =>  {
+import { supabase } from '@/app/utils/supabase';
+
+const RootLayout = async ({children} :  {children: React.ReactNode}) =>  {
+    
+    let { data: GameMechanic, error } = await supabase
+    .from('GameMechanic')
+    .select('*');
+        
+    
     return ( 
         <div className="h-full flex">
             <MechanicsNav />
