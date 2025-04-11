@@ -20,9 +20,26 @@ const ProjectTags: React.FC = () => {
     updateTag(id, description); // Use updateTag to update the description
   };
 
-  const handleBrainstorm = (tag: Tag) => {
-    // Placeholder for LLM integration logic
-    console.log("Brainstorming with:", tag);
+  const handleBrainstorm = async (tag: Tag) => {
+    try {
+      const response = await fetch('/api/openrouter', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ tag }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to fetch brainstorming ideas');
+      }
+
+      const data = await response.json();
+      console.log('Brainstorming result:', data);
+      // Handle the brainstorming result (e.g., display it in the UI)
+    } catch (error) {
+      console.error('Error during brainstorming:', error);
+    }
   };
 
   return (
