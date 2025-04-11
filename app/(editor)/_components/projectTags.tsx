@@ -9,37 +9,24 @@ interface Tag {
   description: string;
 }
 
-const ProjectTags: React.FC = () => {
-  const { tags, removeTag, updateTag } = useContext(ProjectTagsContext); // Added updateTag to the context
+interface ProjectTagsProps {
+  onBrainstorm: (tag: Tag) => void;
+  onTagsChange: React.Dispatch<React.SetStateAction<Tag[]>>;
+}
+
+const ProjectTags: React.FC<ProjectTagsProps> = ({ onBrainstorm, onTagsChange }) => {
+  const { tags, removeTag, updateTag } = useContext(ProjectTagsContext);
 
   const handleRemove = (id: string) => {
     removeTag(id);
+    onTagsChange(tags.filter((tag) => tag.id !== id));
   };
 
   const handleDescriptionChange = (id: string, description: string) => {
-    updateTag(id, description); // Use updateTag to update the description
-  };
-
-  const handleBrainstorm = async (tag: Tag) => {
-    try {
-      const response = await fetch('/api/openrouter', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ tag }),
-      });
-
-      if (!response.ok) {
-        throw new Error('Failed to fetch brainstorming ideas');
-      }
-
-      const data = await response.json();
-      console.log('Brainstorming result:', data);
-      // Handle the brainstorming result (e.g., display it in the UI)
-    } catch (error) {
-      console.error('Error during brainstorming:', error);
-    }
+    updateTag(id, description);
+    onTagsChange(
+      tags.map((tag) => (tag.id === id ? { ...tag, description } : tag))
+    );
   };
 
   return (
@@ -58,12 +45,12 @@ const ProjectTags: React.FC = () => {
               placeholder="Write how this relates to your game..."
               value={tag.description}
               style={{ height: tag.description ? "4rem" : "3rem" }}
-              onChange={(e) => handleDescriptionChange(tag.id, e.target.value)} // Updated to use handleDescriptionChange
+              onChange={(e) => handleDescriptionChange(tag.id, e.target.value)}
             />
             <div className="flex gap-2 mt-2">
               <button
                 className="px-4 py-2 text-sm text-white bg-gray-600 rounded-full hover:bg-gray-800 transition duration-150 ease-in-out"
-                onClick={() => handleBrainstorm(tag)}
+                onClick={() => onBrainstorm(tag)}
               >
                 Brainstorm
               </button>

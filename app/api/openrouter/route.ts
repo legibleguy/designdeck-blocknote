@@ -3,9 +3,9 @@ export const POST = async (req: Request) => {
     const body = await req.json();
     console.log('Received request body:', body);
 
-    const { tag } = body;
+    const { tag, documentContent } = body;
 
-    if (!tag || !tag.title) {
+    if (!tag || !tag.title || !documentContent) {
       console.error('Invalid request body:', body);
       return new Response(JSON.stringify({ error: 'Invalid request body' }), { status: 400 });
     }
@@ -19,11 +19,12 @@ export const POST = async (req: Request) => {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        model: 'deepseek/deepseek-r1:free',
+        model: 'google/gemini-2.5-pro-exp-03-25:free',
         messages: [
           {
-            role: 'user',
-            content: `Brainstorm ideas for the game mechanic titled "${tag.title}". ${descriptionPart}`,
+            role: 'user', 
+            content: `Integrate the following game mechanic into the existing game design document. Return the response as HTML but never include "\`\`\`html" and "\`\`\`" at the beginning and end of your response. Your response should be just the output document and no additional text like "Okay, here is...". You shouldn't replace the content of the existing document but rather add an idea - unless the specified mechanic is already discussed in the document. In that case you are allowed to modify paragraphs. Maintain the original tone, format, and style of the text
+.\n\nGame Mechanic Title: ${tag.title}\n${descriptionPart}\n\nExisting Document Content:\n${documentContent}\n\nPlease return the response in Markdown format.`,
           },
         ],
       }),

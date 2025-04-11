@@ -11,28 +11,38 @@ import React from "react";
 import "@blocknote/core/fonts/inter.css";
 
 interface EditorProps {
-  onChange: () => void;
+  onChange: (content: string) => void;
   initialContent?: string;
   editable?: boolean;
+  onEditorReady?: (editor: BlockNoteEditor | undefined) => void;
 }
 
 const Editor: React.FC<EditorProps> = ({
   onChange,
   initialContent,
   editable,
+  onEditorReady
 }) => {
-  const editor: BlockNoteEditor = useCreateBlockNote({
+  const editor: BlockNoteEditor | undefined = useCreateBlockNote({
     initialContent: initialContent
       ? (JSON.parse(initialContent) as PartialBlock[])
       : undefined,
   });
+
+  // Notify parent component when the editor is ready
+  React.useEffect(() => {
+    if (onEditorReady) {
+      onEditorReady(editor);
+    }
+  }, [editor, onEditorReady]);
+
   return (
     <div className="-mx-[54px] my-4">
       <BlockNoteView
         editor={editor}
         editable={editable}
         theme="light"
-        onChange={onChange}
+        onChange={async () => onChange(await editor?.blocksToFullHTML(editor.document) || "")}
       />
     </div>
   );

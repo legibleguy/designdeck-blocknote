@@ -14,6 +14,8 @@ interface MechanicsNavProps {
     title: string;
     category: string;
     description: string;
+    longDescription: string;
+    solvedProblems: string;
   }[];
 }
 
@@ -161,7 +163,13 @@ const MechanicsNav: React.FC<MechanicsNavProps> = ({ gameMechanics }) => {
                 title={mechanic.title}
                 category={mechanic.category}
                 description={mechanic.description}
-                onAdd={() => addTag({ id: mechanic.id, title: mechanic.title, description: "" })}
+                onAdd={() => addTag({ 
+                  id: mechanic.id, 
+                  title: mechanic.title, 
+                  description: "", 
+                  longDescription: mechanic.longDescription, // Pass longDescription
+                  solvedProblems: mechanic.solvedProblems // Pass solvedProblems
+                })}
               />
             ))}
         </div>

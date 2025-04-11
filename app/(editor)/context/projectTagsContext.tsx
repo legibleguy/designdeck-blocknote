@@ -2,26 +2,28 @@
 
 import React, { createContext, useState } from "react";
 
-interface Tag {
-  id: string; // Changed from number to string
+export interface Tag {
+  id: string;
   title: string;
   description: string;
+  longDescription?: string; // Added optional field for long description
+  solvedProblems?: string; // Added optional field for solved problems
 }
 
 interface ProjectTagsContextProps {
   tags: Tag[];
-  hiddenTags: string[]; // Changed from number[] to string[]
+  hiddenTags: string[];
   addTag: (tag: Tag) => void;
-  removeTag: (id: string) => void; // Changed parameter type from number to string
-  isTagHidden: (id: string) => boolean; // Changed parameter type from number to string
-  updateTag: (id: string, description: string) => void; // New function to update tag description
+  removeTag: (id: string) => void;
+  isTagHidden: (id: string) => boolean;
+  updateTag: (id: string, description: string) => void;
 }
 
 export const ProjectTagsContext = createContext<ProjectTagsContextProps>(null!);
 
 export const ProjectTagsProvider: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [tags, setTags] = useState<Tag[]>([]);
-  const [hiddenTags, setHiddenTags] = useState<string[]>([]); // Changed from number[] to string[]
+  const [hiddenTags, setHiddenTags] = useState<string[]>([]);
 
   const addTag = (tag: Tag) => {
     setTags((prevTags) => [...prevTags, tag]);
