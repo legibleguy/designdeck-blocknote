@@ -11,7 +11,7 @@ interface Tag {
 
 interface ProjectTagsProps {
   onBrainstorm: (tag: Tag) => void;
-  onTagsChange: React.Dispatch<React.SetStateAction<Tag[]>>;
+  onTagsChange: (tags: Tag[]) => void;
 }
 
 const ProjectTags: React.FC<ProjectTagsProps> = ({ onBrainstorm, onTagsChange }) => {

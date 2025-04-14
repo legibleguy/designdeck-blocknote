@@ -17,6 +17,7 @@ interface ProjectTagsContextProps {
   removeTag: (id: string) => void;
   isTagHidden: (id: string) => boolean;
   updateTag: (id: string, description: string) => void;
+  setAllTags: (tags: Tag[]) => void; // Add this line
 }
 
 export const ProjectTagsContext = createContext<ProjectTagsContextProps>(null!);
@@ -43,9 +44,14 @@ export const ProjectTagsProvider: React.FC<{ children: React.ReactNode }> = ({ c
     );
   };
 
+  const setAllTags = (tags: Tag[]) => {
+    setTags(tags);
+    setHiddenTags(tags.map((tag) => tag.id));
+  };
+
   return (
     <ProjectTagsContext.Provider
-      value={{ tags, hiddenTags, addTag, removeTag, isTagHidden, updateTag }}
+      value={{ tags, hiddenTags, addTag, removeTag, isTagHidden, updateTag, setAllTags }}
     >
       {children}
     </ProjectTagsContext.Provider>

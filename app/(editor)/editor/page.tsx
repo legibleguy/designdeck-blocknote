@@ -2,17 +2,18 @@
 
 import TextareaAutosize from "react-textarea-autosize";
 import dynamic from "next/dynamic";
-import { SetStateAction, useMemo, useEffect } from "react";
+import { SetStateAction, useMemo, useEffect, useContext } from "react";
 import ProjectTags from "../_components/projectTags";
 import { useState } from "react";
 import { BlockNoteEditor } from "@blocknote/core";
 import { Tag } from "../context/projectTagsContext";
+import { ProjectTagsContext } from "../context/projectTagsContext";
 
 const EditorDocument = () => {
   const [editorContent, setEditorContent] = useState("Default content for the editor.");
   const [editorInstance, setEditorInstance] = useState<BlockNoteEditor | null>(null);
   const [projectTitle, setProjectTitle] = useState("");
-  const [attachedTags, setAttachedTags] = useState<Tag[]>([]);
+  const { tags, setAllTags } = useContext(ProjectTagsContext);
 
   const Editor = useMemo(
     () => dynamic(() => import("../_components/editor"), { ssr: false }),
@@ -64,7 +65,7 @@ const EditorDocument = () => {
     const dataToSave = {
       title: projectTitle,
       content: editorContent,
-      tags: attachedTags,
+      tags: tags, // Use tags from context
     };
     const blob = new Blob([JSON.stringify(dataToSave, null, 2)], { type: "application/json" });
     const url = URL.createObjectURL(blob);
@@ -90,7 +91,7 @@ const EditorDocument = () => {
             const { title, content, tags } = savedData;
             setProjectTitle(title);
             setEditorContent(content);
-            setAttachedTags(tags);
+            setAllTags(tags || []); // Update context for sidebar and panel
             if (editorInstance) {
               editorInstance.replaceBlocks(editorInstance.document, []);
               editorInstance.pasteHTML(content);
@@ -142,7 +143,7 @@ const EditorDocument = () => {
           Load
         </button>
       </div>
-      <ProjectTags onBrainstorm={handleLLMIntegration} onTagsChange={setAttachedTags} />
+      <ProjectTags onBrainstorm={handleLLMIntegration} onTagsChange={setAllTags} />
     </main>
   );
 };
