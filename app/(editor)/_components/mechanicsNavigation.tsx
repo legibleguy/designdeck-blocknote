@@ -29,6 +29,7 @@ const MechanicsNav: React.FC<MechanicsNavProps> = ({ gameMechanics }) => {
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<ComponentRef<"aside">>(null);
   const navbarRef = useRef<ComponentRef<"div">>(null);
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isResetting, setIsResetting] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
 

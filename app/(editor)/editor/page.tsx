@@ -13,6 +13,7 @@ const EditorDocument = () => {
   const [editorContent, setEditorContent] = useState("Default content for the editor.");
   const [editorInstance, setEditorInstance] = useState<BlockNoteEditor | null>(null);
   const [projectTitle, setProjectTitle] = useState("");
+  const [tagsCollapsed, setTagsCollapsed] = useState(false);
   const { tags, setAllTags } = useContext(ProjectTagsContext);
 
   const Editor = useMemo(
@@ -129,7 +130,7 @@ const EditorDocument = () => {
           onEditorReady={(editor) => editor && setEditorInstance(editor)}
         />
       </div>
-      <div className="absolute top-4 right-4 flex space-x-2">
+      <div className="absolute top-4 right-4 flex space-x-2 z-50">
         <button
           onClick={saveContent}
           className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
@@ -143,7 +144,12 @@ const EditorDocument = () => {
           Load
         </button>
       </div>
-      <ProjectTags onBrainstorm={handleLLMIntegration} onTagsChange={setAllTags} />
+      <ProjectTags 
+        onBrainstorm={handleLLMIntegration} 
+        onTagsChange={setAllTags} 
+        collapsed={tagsCollapsed} 
+        onToggleCollapse={() => setTagsCollapsed((c) => !c)}
+      />
     </main>
   );
 };
