@@ -6,7 +6,6 @@ import { SetStateAction, useMemo, useEffect, useContext } from "react";
 import ProjectTags from "../_components/projectTags";
 import { useState } from "react";
 import { BlockNoteEditor } from "@blocknote/core";
-import { Tag } from "../context/projectTagsContext";
 import { ProjectTagsContext } from "../context/projectTagsContext";
 
 const EditorDocument = () => {
@@ -21,7 +20,7 @@ const EditorDocument = () => {
     []
   );
 
-  const handleLLMIntegration = async (tag: any) => {
+  const handleLLMIntegration = async (tag) => {
     if (!editorInstance) {
       console.error("Editor instance is not ready.");
       return;
@@ -98,6 +97,7 @@ const EditorDocument = () => {
               editorInstance.pasteHTML(content);
             }
             alert("Project loaded successfully!");
+          // eslint-disable-next-line @typescript-eslint/no-unused-vars
           } catch (error) {
             alert("Failed to load project: Invalid file format.");
           }
@@ -133,13 +133,13 @@ const EditorDocument = () => {
       <div className="absolute top-4 right-4 flex space-x-2 z-50">
         <button
           onClick={saveContent}
-          className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600"
+          className="px-3 py-1 bg-transparent text-neutral-800 border border-transparent rounded-none transition-colors hover:bg-neutral-100 active:bg-neutral-200 hover:underline focus:underline focus:outline-none"
         >
           Save
         </button>
         <button
           onClick={loadContent}
-          className="px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600"
+          className="px-3 py-1 bg-transparent text-neutral-800 border border-transparent rounded-none transition-colors hover:bg-neutral-100 active:bg-neutral-200 hover:underline focus:underline focus:outline-none"
         >
           Load
         </button>
