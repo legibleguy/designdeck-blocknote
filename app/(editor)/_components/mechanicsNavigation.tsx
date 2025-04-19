@@ -1,11 +1,12 @@
 "use client";
 
 import { cn } from "@/lib/utils";
-import { ChevronsLeft, MenuIcon, List, BookImage, Info } from "lucide-react";
+import { ChevronsLeft, MenuIcon, List, BookImage, Info, Dices, ChevronLeft, ChevronRight } from "lucide-react";
 import { ComponentRef, useRef, useState, useEffect, useContext } from "react";
 import { useMediaQuery } from "usehooks-ts";
 import { ToggleGroup, ToggleGroupItem } from "@/components/ui/toggle-group";
 import GameMechanicCardSmall from "./gameMechanicCardSmall";
+import GameMechanicCardLarge from "./gameMechanicCardLarge";
 import { ProjectTagsContext } from "../context/projectTagsContext";
 
 interface MechanicsNavProps {
@@ -29,9 +30,10 @@ const MechanicsNav: React.FC<MechanicsNavProps> = ({ gameMechanics }) => {
   const isResizingRef = useRef(false);
   const sidebarRef = useRef<ComponentRef<"aside">>(null);
   const navbarRef = useRef<ComponentRef<"div">>(null);
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const [isResetting, setIsResetting] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(isMobile);
+  const [viewMode, setViewMode] = useState("list");
+  const [currentCardIndex, setCurrentCardIndex] = useState(0);
 
   const handleMouseDown = (
     event: React.MouseEvent<HTMLDivElement, MouseEvent>
@@ -109,6 +111,11 @@ const MechanicsNav: React.FC<MechanicsNavProps> = ({ gameMechanics }) => {
     }
   };
 
+  const handleRandomCard = () => {
+    const randomIndex = Math.floor(Math.random() * gameMechanics.length);
+    setCurrentCardIndex(randomIndex);
+  };
+
   useEffect(() => {
     if (isMobile) {
       setIsCollapsed(true);
@@ -144,36 +151,107 @@ const MechanicsNav: React.FC<MechanicsNavProps> = ({ gameMechanics }) => {
       >
         {/* a toggle button to switch between the list that fits more mechanics in one view vs card view that focuses on one mechanic in more detail   */}
         <div className="flex justify-center mt-16 mb-2">
-          <ToggleGroup type="single">
-            <ToggleGroupItem value="list" className="hover:bg-secondary/100 hover:text-gray-500 active:bg-secondary/20 active:border-secondary/100 border-2">
+          <ToggleGroup
+            type="single"
+            value={viewMode}
+            onValueChange={(value) => {
+              if (value === "list") {
+                setViewMode("list");
+              } else if (value === "card") {
+                setViewMode("card");
+              }
+            }}
+          >
+            <ToggleGroupItem
+              value="list"
+              className={cn(
+                "hover:bg-secondary/100 hover:text-gray-500 active:bg-secondary/20 active:border-secondary/100 border-2",
+                viewMode === "list" && "bg-secondary/100 text-gray-500"
+              )}
+            >
               <List role="button" className="h-4 w-4" />
             </ToggleGroupItem>
-            <ToggleGroupItem value="card" className="hover:bg-secondary/100 hover:text-gray-500 active:bg-secondary/20 active:border-secondary/100 border-2">
+            <ToggleGroupItem
+              value="card"
+              className={cn(
+                "hover:bg-secondary/100 hover:text-gray-500 active:bg-secondary/20 active:border-secondary/100 border-2",
+                viewMode === "card" && "bg-secondary/100 text-gray-500"
+              )}
+            >
               <BookImage role="button" className="h-4 w-4" />
             </ToggleGroupItem>
           </ToggleGroup>
         </div>
 
-        {/* a list of game mechanics, each with a title and description */}
-        <div className="flex flex-col gap-4 p-4 overflow-y-auto">
-          {gameMechanics
-            .filter((mechanic) => !isTagHidden(mechanic.id))
-            .map((mechanic) => (
-              <GameMechanicCardSmall
-                key={mechanic.id}
-                title={mechanic.title}
-                category={mechanic.category}
-                description={mechanic.description}
-                onAdd={() => addTag({ 
-                  id: mechanic.id, 
-                  title: mechanic.title, 
-                  description: "", 
-                  longDescription: mechanic.longDescription, // Pass longDescription
-                  solvedProblems: mechanic.solvedProblems // Pass solvedProblems
-                })}
-              />
-            ))}
-        </div>
+        {/* Conditional rendering based on viewMode */}
+        {viewMode === "list" ? (
+          <div className="flex flex-col gap-4 p-4 overflow-y-auto">
+            {gameMechanics
+              .filter((mechanic) => !isTagHidden(mechanic.id))
+              .map((mechanic) => (
+                <GameMechanicCardSmall
+                  key={mechanic.id}
+                  title={mechanic.title}
+                  category={mechanic.category}
+                  description={mechanic.description}
+                  onAdd={() =>
+                    addTag({
+                      id: mechanic.id,
+                      title: mechanic.title,
+                      description: "",
+                      longDescription: mechanic.longDescription, // Pass longDescription
+                      solvedProblems: mechanic.solvedProblems, // Pass solvedProblems
+                    })
+                  }
+                />
+              ))}
+          </div>
+        ) : (
+          <div className="flex flex-col gap-4 p-4">
+            {gameMechanics
+              .filter((mechanic) => !isTagHidden(mechanic.id))
+              .map((mechanic, index) => (
+                index === currentCardIndex && (
+                  <GameMechanicCardLarge
+                    key={mechanic.id}
+                    title={mechanic.title}
+                    category={mechanic.category}
+                    longDescription={mechanic.longDescription}
+                    timeToImplement={{ min: "1 hour", max: "3 hours" }}
+                    onAdd={() =>
+                      addTag({
+                        id: mechanic.id,
+                        title: mechanic.title,
+                        description: "",
+                        longDescription: mechanic.longDescription,
+                        solvedProblems: mechanic.solvedProblems,
+                      })
+                    }
+                  />
+                )
+              ))}
+            <div className="flex justify-center items-center gap-4 mt-4">
+              <button
+                onClick={() => setCurrentCardIndex((prevIndex) => (prevIndex - 1 + gameMechanics.length) % gameMechanics.length)}
+                className="flex items-center justify-center w-8 h-8 text-white bg-gray-600 rounded-full hover:bg-gray-800 transition duration-150 ease-in-out active:bg-gray-700"
+              >
+                <ChevronLeft className="h-4 w-4" />
+              </button>
+              <button
+                onClick={handleRandomCard}
+                className="flex items-center justify-center w-8 h-8 text-white bg-gray-600 rounded-full hover:bg-gray-800 transition duration-150 ease-in-out active:bg-gray-700"
+              >
+                <Dices className="h-4 w-4" />
+              </button>
+              <button
+                onClick={() => setCurrentCardIndex((prevIndex) => (prevIndex + 1) % gameMechanics.length)}
+                className="flex items-center justify-center w-8 h-8 text-white bg-gray-600 rounded-full hover:bg-gray-800 transition duration-150 ease-in-out active:bg-gray-700"
+              >
+                <ChevronRight className="h-4 w-4" />
+              </button>
+            </div>
+          </div>
+        )}
 
         {/* an info disclaimer about where our dataset came from and how you can contribure to it */}
         <div className="p-4 mt-8">
